@@ -8,7 +8,7 @@
   <img src="https://img.shields.io/github/stars/Willian-Rodrigues/pet?style=flat-square" />
 
   <a href="https://github.com/Willian-Rodrigues/pet/commits/master">
-    <img alt="GitHub last commit" src="https://img.shields.io/github/last-commit/Willian-Rodrigues/Criando-um-hook-de-carrinho-de-compras?style=flat-square&">
+    <img alt="GitHub last commit" src="https://img.shields.io/github/last-commit/Willian-Rodrigues/pet?style=flat-square&">
   </a>
 
   <a href="https://github.com/Willian-Rodrigues">
