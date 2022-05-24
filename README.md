@@ -78,7 +78,3 @@ Made with 💜 by <a href="https://github.com/Willian-Rodrigues" target="_blank"
 &#xa0;
 
 <a href="#top">Back to top</a>
-
-<div align="center">
-  <img align="center" src="https://profile-counter.glitch.me/Willian-Rodrigues/pet/count.svg" />
-</div> 
