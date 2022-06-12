@@ -10,73 +10,74 @@ import {
 } from 'react-native';
 import { FAB } from 'react-native-paper';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import { useMedicine, usePet } from '../../hooks';
+import { usePayment, usePet } from '../../hooks';
 import styles from './styles';
 
-export default function Medicine(props) {
-  const [id, setId] = useState('');
+export default function Payment(props) {
   const [register, setRegister] = useState(false);
   const [list, setList] = useState([]);
 
   const { selectedPet } = usePet();
-  const { medicineList, medicineCreate, medicineRemove } = useMedicine();
+  const { paymentList, paymentCreate, paymentRemove } = usePayment();
 
-  const add = async name => {
-    if (!name || (selectedPet && !selectedPet.idpet)) {
+  const add = async (description, value) => {
+    if (!description || !value || (selectedPet && !selectedPet.idpet)) {
       return Alert.alert(
         'Preenchimento invalido',
-        'Nome do medicamento é obrigatório'
+        'Por favor, preencha todos os campos'
       );
     }
-    const res = await medicineCreate(selectedPet.idpet, name);
-    if (res && res.idmedicine) {
-      name = name.trim();
+    const res = await paymentCreate(selectedPet.idpet, description, value);
+    if (res && res.idpayment) {
+      description = description.trim();
       const date =
         new Date().getDate() +
         '/' +
         (new Date().getMonth() + 1) +
         '/' +
         new Date().getFullYear();
-      const idmedicine = list.length + 1;
-      const aux = [...list, { idmedicine, name, date }];
+      const idpayment = list.length + 1;
+      const aux = [...list, { idpayment, description, value, date }];
       setList(aux);
       setRegister(false);
     } else {
-      Alert.alert('Erro', 'Não foi possivel registrar o medicamento');
+      Alert.alert('Erro', 'Não foi possivel registrar o pagamento');
     }
   };
 
   const remove = async id => {
-    const res = await medicineRemove(id);
-    if (res && res.idmedicine) {
+    const res = await paymentRemove(id);
+    if (res && res.idpayment) {
       const aux = [...list];
       for (let i = 0; i < aux.length; i++) {
-        if (aux[i].idmedicine == id) {
+        if (aux[i].idpayment == id) {
           aux.splice(i, 1);
           setList(aux);
           break;
         }
       }
     } else {
-      Alert.alert('Erro', 'Não foi possivel remover o medicamento');
+      Alert.alert('Erro', 'Não foi possivel remover o pagamento');
     }
   };
 
   useEffect(() => {
     if (selectedPet && selectedPet.idpet) {
-      medicineList(selectedPet.idpet).then(res => setList(res.medicines));
+      paymentList(selectedPet.idpet).then(res => setList(res));
     }
-  }, []);
+  }, [selectedPet]);
 
   const renderItem = ({ item }) => (
     <View style={styles.item}>
       <View style={styles.itemtext}>
-        <Text style={styles.itemname}>{item.name}</Text>
-        <Text style={styles.itemname}>{item.date}</Text>
+        <Text style={styles.itemname}>{item.description}</Text>
+        <Text style={styles.itemname}>
+          R${item.value} - {item.date}
+        </Text>
       </View>
       <TouchableOpacity
         style={styles.remove}
-        onPress={() => remove(item.idmedicine)}
+        onPress={() => remove(item.idpayment)}
       >
         <MaterialCommunityIcons name="delete" color="#555" size={25} />
       </TouchableOpacity>
@@ -93,14 +94,14 @@ export default function Medicine(props) {
   ) : (
     <View style={styles.container}>
       <View style={styles.titlebox}>
-        <Text style={styles.titletext}>{selectedPet.name || ''}</Text>
+        <Text style={styles.titletext}>{selectedPet && selectedPet.name}</Text>
       </View>
       {list.length > 0 ? (
         <ScrollView style={styles.scroll}>
           <FlatList
             data={list}
             renderItem={renderItem}
-            keyExtractor={item => item.idmedicine}
+            keyExtractor={item => item.idpayment}
           />
         </ScrollView>
       ) : (
@@ -121,32 +122,42 @@ function Empty() {
   return (
     <View style={styles.msg}>
       <Text style={styles.msgtext}>
-        Clique no botão para cadastrar um medicamento
+        Clique no botão para cadastrar um pagamento
       </Text>
     </View>
   );
 }
 
 function Register(props) {
-  const [name, setName] = useState('');
+  const [description, setDescription] = useState('');
+  const [value, setValue] = useState('');
 
   return (
     <View style={styles.registercontainer}>
       <View style={styles.box}>
-        <Text style={styles.title}>CADASTRAR MEDICAMENTO</Text>
+        <Text style={styles.title}>CADASTRAR GASTO</Text>
         <View style={{ marginTop: 20 }}>
-          <Text style={styles.label}>Nome do medicamento</Text>
+          <Text style={styles.label}>Descrição</Text>
           <TextInput
             style={styles.input}
-            onChangeText={setName}
-            value={name}
+            onChangeText={setDescription}
+            value={description}
             autoCapitalize="words"
+          />
+        </View>
+        <View style={{ marginTop: 20 }}>
+          <Text style={styles.label}>Valor</Text>
+          <TextInput
+            style={styles.input}
+            onChangeText={setValue}
+            value={value}
+            keyboardType="decimal-pad"
           />
         </View>
         <View style={styles.boxButton}>
           <TouchableOpacity
             style={styles.button}
-            onPress={() => props.add(name)}
+            onPress={() => props.add(description, value)}
           >
             <Text style={styles.buttonLabel}>salvar</Text>
           </TouchableOpacity>

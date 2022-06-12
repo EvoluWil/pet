@@ -27,9 +27,9 @@ export default function Pet(props) {
     async function list() {
       setLoading(true);
       const response = await petList();
-      if (response.pets) {
-        setList(response.pets);
-        if (response.pets.length > 0) selectPet(response.pets[0]);
+      if (response) {
+        setList(response);
+        if (response.length > 0) selectPet(response[0]);
       }
       setLoading(false);
     }
@@ -58,7 +58,7 @@ export default function Pet(props) {
     if (name) {
       setLoading(true);
       const response = await petCreate(name);
-      if (response.idpet) {
+      if (response?.idpet) {
         const aux = [...list, response];
         setList(aux);
         selectPet(response);
@@ -81,7 +81,7 @@ export default function Pet(props) {
               if (aux[i].idpet == idpet) {
                 aux.splice(i, 1);
                 setList(aux);
-                if (idpet == selected && aux.length > 0) selectPet(aux[0]);
+                if (idpet == selectPet && aux.length > 0) selectPet(aux[0]);
                 break;
               }
             }

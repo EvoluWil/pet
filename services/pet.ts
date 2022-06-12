@@ -1,35 +1,36 @@
+import { Pet } from '../models/Pet';
 import api from './api';
 
-async function petList() {
+async function petList(): Promise<Pet[]> {
   try {
-    const { data } = await api.get('/pet/list');
-    return data;
+    const { data } = await api.get<{ pets: Pet[]; count: number }>('/pet/list');
+    return data.pets;
   } catch (e) {
-    return { error: e.message };
+    return e.message;
   }
 }
 
-async function petCreate(name) {
+async function petCreate(name: string) {
   try {
     const { data } = await api.post('/pet/create', { name });
     return data;
   } catch (e) {
-    return { error: e.message };
+    return e.message;
   }
 }
 
-async function petRemove(idpet) {
+async function petRemove(idpet: string) {
   try {
     const { data } = await api.delete('/pet/remove', {
       data: { idpet: idpet }
     });
     return data;
   } catch (e) {
-    return { error: e.message };
+    return e.message;
   }
 }
 
-async function paymentCreate(idpet, description, name) {
+async function paymentCreate(idpet: string, description: string, name: string) {
   try {
     const { data } = await api.post('/payment/create', {
       idpet,
@@ -38,7 +39,7 @@ async function paymentCreate(idpet, description, name) {
     });
     return data;
   } catch (e) {
-    return { error: e.message };
+    return e.message;
   }
 }
 

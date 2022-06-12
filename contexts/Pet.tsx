@@ -1,24 +1,33 @@
 import React, { createContext, useState } from 'react';
+import { Pet } from '../models/Pet';
 import * as pet from '../services/pet';
 
-const PetContext = createContext({});
+interface PetContexProps {
+  petList: () => Promise<Pet[]>;
+  petCreate: (name: string) => Promise<Pet>;
+  petRemove: (idPet: string) => Promise<Pet>;
+  selectPet: (pet: Pet) => void;
+  selectedPet: Pet;
+}
+
+const PetContext = createContext({} as PetContexProps);
 
 const PetProvider = ({ children }) => {
-  const [selectedPet, setSelectedPet] = useState({});
+  const [selectedPet, setSelectedPet] = useState({} as Pet);
 
   async function petList() {
     return await pet.petList();
   }
 
-  async function petCreate(name) {
+  async function petCreate(name: string) {
     return await pet.petCreate(name);
   }
 
-  async function petRemove(idpet) {
+  async function petRemove(idpet: string) {
     return await pet.petRemove(idpet);
   }
 
-  function selectPet(pet) {
+  function selectPet(pet: Pet) {
     setSelectedPet(pet);
   }
 

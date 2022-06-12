@@ -1,18 +1,25 @@
 import React, { createContext } from 'react';
+import { Medicine } from '../models/Medicine';
 import * as medicine from '../services/medicine';
 
-const MedicineContext = createContext({});
+interface MedicineContexProps {
+  medicineList: (idpet: string) => Promise<Medicine[]>;
+  medicineCreate: (idpet: string, name: string) => Promise<Medicine>;
+  medicineRemove: (idmedicine: string) => Promise<Medicine>;
+}
+
+const MedicineContext = createContext({} as MedicineContexProps);
 
 const MedicineProvider = ({ children }) => {
-  async function medicineList(idpet) {
+  async function medicineList(idpet: string) {
     return await medicine.medicineList(idpet);
   }
 
-  async function medicineCreate(idpet, name) {
+  async function medicineCreate(idpet: string, name: string) {
     return await medicine.medicineCreate(idpet, name);
   }
 
-  async function medicineRemove(idmedicine) {
+  async function medicineRemove(idmedicine: string) {
     return await medicine.medicineRemove(idmedicine);
   }
 

@@ -1,9 +1,19 @@
 import * as SecureStore from 'expo-secure-store';
 import React, { createContext, useEffect, useState } from 'react';
+import { Alert } from 'react-native';
 import api from '../services/api';
 import * as auth from '../services/auth';
 
-const AuthContext = createContext({});
+interface AuthContextProps {
+  signIn: (mail: string, password: string) => Promise<any>;
+  signOut: () => void;
+  token: string;
+  mail: string;
+  loading: boolean;
+  userCreate: (mail: string, password: string) => Promise<any>;
+}
+
+const AuthContext = createContext({} as AuthContextProps);
 
 // extrai o children em <AuthProdiver> children </AuthProvider>
 // no children estarão as rotas definidas por Navigator e Screen
@@ -19,7 +29,7 @@ const AuthProvider = ({ children }) => {
       const storagedMail = await SecureStore.getItemAsync('mail');
 
       if (storagedToken && storagedMail) {
-        api.defaults.headers.Authorization = `Bearer ${storagedToken}`;
+        api.defaults.headers.common.Authorization = `Bearer ${storagedToken}`;
         setMail(storagedMail);
         setToken(storagedToken);
       }
@@ -29,38 +39,38 @@ const AuthProvider = ({ children }) => {
     loadStorageData();
   }, []);
 
-  async function signIn(mail, password) {
+  async function signIn(mail: string, password: string) {
     const response = await auth.signIn(mail, password);
 
-    if (response.token && response.mail) {
-      api.defaults.headers.Authorization = `Bearer ${response.token}`;
+    if (response?.token && response?.mail) {
+      api.defaults.headers.common.Authorization = `Bearer ${response.token}`;
       await SecureStore.setItemAsync('token', response.token);
       await SecureStore.setItemAsync('mail', response.mail);
       setToken(response.token);
       setMail(response.mail);
     } else {
-      return { error: response.error || 'Problemas ao executar a operação' };
+      Alert.alert(response.error || 'Problemas ao executar a operação');
     }
   }
 
   async function signOut() {
-    api.defaults.headers.Authorization = '';
+    api.defaults.headers.common.Authorization = '';
     setToken(null);
     setMail(null);
     SecureStore.deleteItemAsync('token');
     SecureStore.deleteItemAsync('mail');
   }
 
-  async function userCreate(mail, password) {
+  async function userCreate(mail: string, password: string) {
     const response = await auth.userCreate(mail, password);
     if (response.token && response.mail) {
-      api.defaults.headers.Authorization = `Bearer ${response.token}`;
+      api.defaults.headers.common.Authorization = `Bearer ${response.token}`;
       await SecureStore.setItemAsync('token', response.token);
       await SecureStore.setItemAsync('mail', response.mail);
       setToken(response.token);
       setMail(response.mail);
     } else {
-      return { error: response.error || 'Problemas ao executar a operação' };
+      Alert.alert(response.error || 'Problemas ao executar a operação');
     }
   }
   return (
