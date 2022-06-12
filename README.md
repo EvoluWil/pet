@@ -29,6 +29,7 @@
 - [x] Adicionar novo MEDICAMENTO ao pet
 - [x] Remover MEDICAMENTO do pet
 - [x] REFATORAR condigo original utilizando hooks e contextos
+- [x] Migrar para Typescript
 
 ---
 
