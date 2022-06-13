@@ -49,7 +49,7 @@ $ cd pet
 $ expo install # ou npm install
 
 # Execute o server
-$ yarn web # ou npm run web
+$ npm run web # ou npm run web
 
 # O server estará rodando na porta:19006 - acesse http://localhost:19006/
 
